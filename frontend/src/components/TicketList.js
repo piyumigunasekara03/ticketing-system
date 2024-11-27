@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { TicketContext } from "../context/TicketContext";
 
 const TicketList = () => {
+    // const { tickets, loading } = useContext(TicketContext);
     const [tickets, setTickets] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // Fetch available tickets
     const fetchTickets = async () => {
@@ -11,12 +14,18 @@ const TicketList = () => {
             setTickets(response.data);
         } catch (error) {
             console.error("Error fetching tickets:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchTickets();
     }, []);
+
+    if (loading) {
+        return <p>Loading tickets</p>
+    }
 
     return (
         <div>

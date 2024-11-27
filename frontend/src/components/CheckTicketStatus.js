@@ -1,37 +1,53 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Notification from "./Notification";
+import InputField from "./InputField";
 
 const CheckTicketStatus = () => {
     const [ticketId, setTicketId] = useState("");
-    const [status, setStatus] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
+    const [messageType, setMessageType] = useState(""); // 'success' or 'error'
+    const [loading, setLoading] = useState(false);
 
     const checkStatus = async () => {
+        if (!ticketId || parseInt(ticketId) <= 0) {
+            setStatusMessage("Please enter a valid Ticket ID.");
+            setMessageType("error");
+            return;
+        }
+
+        setLoading(true);
         try {
             const response = await axios.get(`http://localhost:3000/status/${ticketId}`);
-            setStatus(`Ticket ID: ${response.data.id}, Status: ${response.data.status}`);
+            setStatusMessage(`Ticket ID: ${response.data.id}, Status: ${response.data.status}`);
+            setMessageType("success");
         } catch (error) {
             if (error.response && error.response.status === 404) {
-                setStatus("Ticket not found.");
+                setStatusMessage("Ticket not found.");
             } else {
-                setStatus("Failed to fetch ticket status.");
+                setStatusMessage("Failed to fetch ticket status.");
             }
+            setMessageType("error");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div>
             <h2>Check Ticket Status</h2>
-            <input
-                type="number"
-                placeholder="Enter Ticket ID"
+            <Notification message={statusMessage} type={messageType} />
+            <InputField
                 value={ticketId}
-                onChange={e => setTicketId(e.target.value)}
+                onChange={(e) => setTicketId(e.target.value)}
+                placeholder="Enter Ticket ID"
+                disabled={loading}
             />
-            <button onClick={checkStatus}>Check Status</button>
-            {status && <p>{status}</p>}
+            <button onClick={checkStatus} disabled={loading}>
+                {loading ? "Checking..." : "Check Status"}
+            </button>
         </div>
     );
 };
 
 export default CheckTicketStatus;
-
