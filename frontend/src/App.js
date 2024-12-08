@@ -1,36 +1,31 @@
-import React from "react";
-import Navbar from "./components/Navbar";
-import TicketList from "./components/TicketList";
-import PurchaseTicket from "./components/PurchaseTicket";
-import CheckTicketStatus from "./components/CheckTicketStatus";
-import { TicketProvider } from "./context/TicketContext";
-import "./App.css"; // Import the styles
+// src/App.js
+import React, { useState } from 'react';
+import TicketForm from './components/TicketForm';
+import TicketList from './components/TicketList';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/global.css';
 
-function App() {
-    // Function to refresh the ticket list after a purchase
-    // const refreshTickets = () => {
-    //     window.location.reload(); // Simplistic way to refresh; can be optimized
-    // };
+const App = () => {
+  const [tickets, setTickets] = useState([]);
 
-    return (
-        <TicketProvider>
-            <Navbar/>
-            <div style={{ padding: "20px" }}>
-            <h1>Ticketing System</h1>
+  const handleCreateTicket = (ticket) => {
+    setTickets([...tickets, ticket]);
+  };
 
-            {/* Component to display all available tickets */}
-            <TicketList />
+  const handleDeleteTicket = (index) => {
+    const newTickets = tickets.filter((_, i) => i !== index);
+    setTickets(newTickets);
+  };
 
-            {/* Component to handle ticket purchase */}
-            <PurchaseTicket />
+  return (
+    <div className="container">
+      <h1 className="text-center my-4">Ticketing System</h1>
 
-            {/* Component to check the status of a ticket */}
-            <CheckTicketStatus />
-        </div>
-        </TicketProvider>
-               
-    );
-}
+      <TicketForm onCreate={handleCreateTicket} />
+      <TicketList tickets={tickets} onDelete={handleDeleteTicket} />
+    </div>
+  );
+};
 
 export default App;
 
