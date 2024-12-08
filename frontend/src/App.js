@@ -1,31 +1,19 @@
-// src/App.js
-import React, { useState } from 'react';
-import TicketForm from './components/TicketForm';
-import TicketList from './components/TicketList';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './styles/global.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  // Import Routes and Route instead of Switch
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import TicketDetails from './pages/TicketDetails';
 
-const App = () => {
-  const [tickets, setTickets] = useState([]);
-
-  const handleCreateTicket = (ticket) => {
-    setTickets([...tickets, ticket]);
-  };
-
-  const handleDeleteTicket = (index) => {
-    const newTickets = tickets.filter((_, i) => i !== index);
-    setTickets(newTickets);
-  };
-
+function App() {
   return (
-    <div className="container">
-      <h1 className="text-center my-4">Ticketing System</h1>
-
-      <TicketForm onCreate={handleCreateTicket} />
-      <TicketList tickets={tickets} onDelete={handleDeleteTicket} />
-    </div>
+    <Router>
+      <Routes> {/* Replace Switch with Routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/ticket-details" element={<TicketDetails />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
 
