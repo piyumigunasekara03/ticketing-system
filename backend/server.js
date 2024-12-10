@@ -1,96 +1,50 @@
-const express = require('express');
+const express = require("express");
+const cors = require("cors");
 const app = express();
-const PORT = 3000;
+const bodyParser = require("body-parser");
 
-// Middleware to parse JSON request bodies
-app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());  // Middleware to parse JSON requests
 
-// In-memory ticket storage
-let tickets = [
-    { id: 1, status: "available", price: 100 },
-    { id: 2, status: "available", price: 150 },
-    { id: 3, status: "sold", price: 200 },
-];
-
-// Fetch all available tickets
-app.get('/tickets', (req, res) => {
-    const availableTickets = tickets.filter(ticket => ticket.status === "available");
-    res.json(availableTickets);
+// Root route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Ticketing System API!");
 });
 
-// Purchase a ticket
-app.post('/purchase', (req, res) => {
-    const { id } = req.body;
 
-    if (!id) {
-        return res.status(400).json({ message: "Ticket ID is required" });
-    }
+// Endpoint to handle configuration updates
+app.post("/config/update", (req, res) => {
+  const { totalTickets, ticketReleaseRate, customerRetrievalRate, vendorCount } = req.body;
 
-    const ticket = tickets.find(ticket => ticket.id === id);
+  // Here, you can process the configuration data
+  console.log("Received configuration update:", req.body);
 
-    if (!ticket) {
-        return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    if (ticket.status === "sold") {
-        return res.status(400).json({ message: "Ticket is already sold" });
-    }
-
-    ticket.status = "sold";
-    res.json({ message: "Ticket purchased successfully", ticket });
+  // Simulate saving the configuration to a database or in-memory data
+  // You can update the config object or call a function to handle it
+  res.json({ success: true, message: "Configuration updated successfully!" });
 });
 
-// Check the status of a specific ticket
-app.get('/status/:id', (req, res) => {
-    const { id } = req.params;
+// Endpoint to start the simulation
+app.post("/simulation/start", (req, res) => {
+  // Here, you can trigger the start of the simulation based on the provided config
+  console.log("Starting simulation with config:", req.body);
 
-    const ticket = tickets.find(ticket => ticket.id == id);
-
-    if (!ticket) {
-        return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    res.json({ id: ticket.id, status: ticket.status });
+  // Simulate starting the simulation
+  res.json({ success: true, message: "Simulation started successfully!" });
 });
 
-// Create a new ticket
-app.post('/tickets', (req, res) => {
-    const { price } = req.body;
+// Endpoint to stop the simulation
+app.post("/simulation/stop", (req, res) => {
+  // Here, you can trigger the stop of the simulation
+  
+  console.log("Stopping simulation with config:", req.body);
 
-    if (!price || isNaN(price)) {
-        return res.status(400).json({ message: "Valid ticket price is required" });
-    }
-
-    const newTicket = {
-        id: tickets.length + 1,
-        status: "available",
-        price: parseFloat(price),
-    };
-
-    tickets.push(newTicket);
-    res.status(201).json({ message: "Ticket created successfully", ticket: newTicket });
+  // Simulate stopping the simulation
+  res.json({ success: true, message: "Simulation stopped successfully!" });
 });
 
-// Delete a ticket by ID
-app.delete('/tickets/:id', (req, res) => {
-    const { id } = req.params;
-
-    const ticketIndex = tickets.findIndex(ticket => ticket.id == id);
-
-    if (ticketIndex === -1) {
-        return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    tickets.splice(ticketIndex, 1);
-    res.json({ message: `Ticket with ID ${id} deleted successfully` });
-});
-
-// Root endpoint
-app.get('/', (req, res) => {
-    res.send("Welcome to the Ticketing System API");
-});
-
-// Start the server
+// Server setup
+const PORT = 3001;
 app.listen(PORT, () => {
-    console.log(`Backend server is running at http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
