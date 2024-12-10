@@ -1,24 +1,18 @@
 const fs = require("fs");
 
 class FileHandler {
-  static readFile(filePath) {
-    try {
-      const data = fs.readFileSync(filePath, "utf8");
-      return JSON.parse(data);
-    } catch (error) {
-      console.error("Error reading file:", error);
-      return null;
-    }
+  static saveDataToFile(filename, data) {
+    fs.writeFileSync(filename, JSON.stringify(data, null, 2));
   }
 
-  static writeFile(filePath, data) {
-    try {
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-      console.log("File written successfully");
-    } catch (error) {
-      console.error("Error writing file:", error);
+  static readDataFromFile(filename) {
+    if (fs.existsSync(filename)) {
+      const rawData = fs.readFileSync(filename);
+      return JSON.parse(rawData);
     }
+    return null;
   }
 }
 
 module.exports = FileHandler;
+
