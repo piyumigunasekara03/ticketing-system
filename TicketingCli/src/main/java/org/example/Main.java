@@ -1,8 +1,11 @@
 package org.example;
 
+import java.util.logging.Logger;
+
 import java.util.Scanner;
 
 public class Main {
+    private static final Logger logger = LoggerConfig.getLogger();
     private static TicketPool ticketPool;
     private static Thread[] customerThreads;
     private static Thread[] vendorThreads;
@@ -11,10 +14,11 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        logger.info("Starting Ticket System Simulation");
 
         // Load configuration
         Configuration config = Configuration.loadConfiguration();
-        ticketPool = new TicketPool(config.getTotalTickets());
+        ticketPool = new TicketPool(config.getTotalTickets(), config.getMaxTicketCapacity());
 
         // Start or stop simulation based on user input
         while (true) {
@@ -23,11 +27,14 @@ public class Main {
 
             if (input.equals("start")) {
                 startSimulation(config);
+                logger.info("Simulation started.");
             } else if (input.isEmpty()) {
                 stopSimulation();
+                logger.info("Simulation stopped.");
                 break;  // Exit the loop and end the simulation
             } else {
                 System.out.println("Invalid input. Please enter 'start' to begin the simulation or press Enter to stop.");
+                logger.warning("Invalid input received.");
             }
         }
 
@@ -91,5 +98,7 @@ public class Main {
         }
 
         System.out.println("Simulation has stopped.");
+        System.out.println("Stopping simulation...");
+        logger.info("Stopping all threads.");
     }
 }

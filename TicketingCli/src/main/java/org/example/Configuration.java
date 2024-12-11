@@ -23,14 +23,21 @@ public class Configuration {
         this.ticketReleaseRate = ticketReleaseRate;
     }
 
+    public void setMaxTicketCapacity(int maxTicketCapacity) {
+        this.maxTicketCapacity = maxTicketCapacity;
+    }
+
     private int customerRetrievalRate;
     private int ticketReleaseRate;
 
+    private int maxTicketCapacity;
+
     // Constructor to initialize configuration
-    public Configuration(int totalTickets, int customerRetrievalRate, int ticketReleaseRate) {
+    public Configuration(int totalTickets, int customerRetrievalRate, int ticketReleaseRate, int maxTicketCapacity) {
         this.totalTickets = totalTickets;
         this.customerRetrievalRate = customerRetrievalRate;
         this.ticketReleaseRate = ticketReleaseRate;
+        this.maxTicketCapacity = maxTicketCapacity;
     }
 
     // Load configuration from user input
@@ -46,7 +53,10 @@ public class Configuration {
         System.out.print("Enter the vendor ticket release rate (in seconds): ");
         int ticketReleaseRate = Integer.parseInt(scanner.nextLine());
 
-        return new Configuration(totalTickets, customerRetrievalRate, ticketReleaseRate);
+        System.out.print("Enter the maximum ticket capacity:");
+        int maxTicketCapacity = Integer.parseInt(scanner.nextLine());
+
+        return new Configuration(totalTickets, customerRetrievalRate, ticketReleaseRate, maxTicketCapacity);
     }
 
     public int getTotalTickets() {
@@ -59,6 +69,10 @@ public class Configuration {
 
     public int getTicketReleaseRate() {
         return ticketReleaseRate;
+    }
+
+    public int getMaxTicketCapacity() {
+        return maxTicketCapacity;
     }
 
     // Save configuration to JSON
